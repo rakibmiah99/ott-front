@@ -17,7 +17,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      BASE_URL: process.env.API_BASE_URL
+      BASE_URL: 'https://bongtv.nexerb.xyz/public/v1' //process.env.API_BASE_URL
     }
   },
   colorMode: {
