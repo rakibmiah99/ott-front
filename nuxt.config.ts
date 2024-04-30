@@ -19,5 +19,8 @@ export default defineNuxtConfig({
     public: {
       BASE_URL: process.env.API_BASE_URL
     }
+  },
+  colorMode: {
+    preference: 'light'
   }
 })
