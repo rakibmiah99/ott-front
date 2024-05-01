@@ -42,4 +42,6 @@ const breakpoints = {
     snapAlign: 'start',
   },
 }
+
+
 </script>
