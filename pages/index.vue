@@ -1,7 +1,7 @@
 <template>
 
   <BHeader/>
-  <CategoryWisedSectionMove :data="category" v-for="category in categoryStore"/>
+  <CategoryWisedSectionMove :category_data="categoryData" :data="category" v-for="category in categoryStore"/>
 
   <div class="py-8">
     <BWatched/>
@@ -14,12 +14,14 @@
 import Footer from "~/components/BFooter.vue";
 import {getHomepageData} from "~/composables/api.js";
 const categoryStore = useState('category', () => []);
-const {headerMovieStore, makeHeaderMovieStore} = useSliderHeaderMovie();
+const categoryData = ref(null);
+const {headerMovieStore, makeHeaderMovieStore } = useSliderHeaderMovie();
 
 const height = ref(0)
 onMounted(
   () => {
-    getHomepageData()
+    categoryStore.value = [];
+    getCategoryWiseMovies()
     const body = document.getElementsByTagName('body')[0];
     height.value = (body.clientHeight * 75) / 100;
     const {x,y} = useWindowScroll();
@@ -27,11 +29,12 @@ onMounted(
     var skip = 0;
     var loaded = false;
     window.addEventListener('scroll', async function(e){
-      
+      height.value = (body.clientHeight * 75) / 100;
 
       //if scroll height grather than body * 75% height
       if(y.value > height.value){
-       
+        console.log(y.value + ' > '+height.value)
+
         //if not loaded category movies
         if(!loaded){
           loaded = true;
@@ -43,6 +46,7 @@ onMounted(
         }
         //if body 75% height grater loaded preloaded body height 
         if((body.clientHeight * 75) / 100 > height.value ){
+          console.log(y.value + ' > '+height.value)
           //set new height 
           height.value = (body.clientHeight * 75) / 100;
 
@@ -72,10 +76,10 @@ if(limit && skip){
 
 const response = await callApi('/home', options)
 categoryStore.value = categoryStore.value.concat(response.data.sub_category_and_movies);
-if(response.data?.slider_movies){
-  console.log('slider',response.data.slider_movies)
-  headerMovieStore.value = response.data.slider_movies;
-}
+  if(response.data?.slider_movies){
+    categoryData.value = response.data.category;
+    headerMovieStore.value = response.data.slider_movies;
+  }
 
 }
 

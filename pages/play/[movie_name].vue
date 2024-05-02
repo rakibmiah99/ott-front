@@ -19,7 +19,7 @@
 <!--      Movie Details-->
       <div class="py-6 space-y-3">
         <div  class="flex space-y-3  lg:space-y-0 justify-between flex-col lg:flex-row">
-          <h1 class="text-3xl font-bold">When I See Your Face - Chena Chena Lage - S1 E1</h1>
+          <h1 class="text-3xl font-bold">{{movie.name ?? 'When I See Your Face - Chena Chena Lage - S1 E1'}}</h1>
           <div class="social flex space-x-3">
             <UButton icon="i-heroicons-hand-thumb-up" class="text-violet-500 hover:text-white hover:bg-violet-500 bg-violet-50 rounded"/>
             <UButton icon="i-heroicons-hand-thumb-down" class="text-violet-500 hover:text-white hover:bg-violet-500 bg-violet-50 rounded"/>
@@ -31,12 +31,18 @@
 <!--        description-->
         <p class="text-gray-700">2023 • TV Series • 28 Min 27 Sec </p>
         <div class="flex space-y-3 md:space-y-0 flex-col md:flex-row  flex-wrap justify-between text-gray-700">
-          <p class="basis-1 md:basis-6/12 lg:basis-7/12">Lumina and Lianju meet for the first time. But can Lumina remember him?</p>
-          <p class="basis-1 text-left md:basis-6/12 lg:basis-5/12 md:text-right">Genres: Drama, Romance</p>
+          <p class="basis-1 md:basis-6/12 lg:basis-8/12 text-justify">{{movie.description ?? 'Lumina and Lianju meet for the first time. But can Lumina remember him?'}}</p>
+          <p class="basis-1 text-left md:basis-6/12 lg:basis-4/12 md:text-right">Genres: Drama, Romance</p>
         </div>
 
+        
+        <div v-show="movie.seasons.length > 0 ? true : false">
+          <USelectMenu v-model="selected" :options="people" />
+        </div>
+        
+
 <!--        tabs-->
-        <div class="">
+        <div class="" v-show="items.length > 0 ? true : false">
           <UTabs :items="items" :default-index="0" :ui="uiConfig">
             <template #default="{ item, index, selected }">
               <div class="flex gap-2 relative">
@@ -46,11 +52,12 @@
             </template>
             <template #episod="{item}">
               <div>
-                <NuxtLink class="flex space-x-3 border-b p-3 even:bg-violet-50">
-                  <NuxtImg class="w-[150px] sm:w-[150px] md:w-[200px]" src="https://cdn.bongo-solutions.com/abfea462-f64d-491e-9cd9-75ee001f45b0/content/79e519c5-47e0-4a29-916b-c2032f225ad7/fdc1fe99-82c1-4987-8127-dc1bd19bbbe5.jpg"/>
+                <NuxtLink v-for="movie in item.movies" class="flex space-x-3 border-b p-3 even:bg-violet-50">
+                  <NuxtImg class="w-[150px] sm:w-[150px] md:w-[200px] object-cover aspect-[6/4]" :src="movie.thumbnail ?? 'https://cdn.bongo-solutions.com/abfea462-f64d-491e-9cd9-75ee001f45b0/content/79e519c5-47e0-4a29-916b-c2032f225ad7/fdc1fe99-82c1-4987-8127-dc1bd19bbbe5.jpg'"/>
                   <div class="flex flex-col space-y-1">
-                    <h1 class="text-md md:text-lg lg:text-xl font-bold">When I See Your Face - Chena Chena Lage - S1 E1</h1>
-                    <p class="text-sm sm:text-md text-gray-700">Lumina and Lianju meet for the first time. But can Lumina remember him?</p>
+                    <h1 class="text-md md:text-lg lg:text-xl font-bold">{{movie.name ?? 'When I See Your Face - Chena Chena Lage - S1 E1'}}</h1>
+                    <p class="text-sm sm:text-md text-gray-700 line-clamp-3">{{ movie.description ?? 'Lumina and Lianju meet for the first time. But can Lumina remember him?' }}</p>
+                    <!-- <p class="text-2xl">{{item.content}}</p> -->
                   </div>
                 </NuxtLink>
               </div>
@@ -82,10 +89,38 @@
       </div>
     </UContainer>
 </template>
-<script setup lang="ts">
+<script setup>
+const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']
+
+const selected = ref(people[0])
+
+
 import BFixedNav from "~/components/nav/BFixedNav.vue";
 import BPlayer from "~/components/BPlayer.vue";
 import {definePageMeta} from "#imports";
+const route = useRoute();
+
+
+var movie = reactive({
+  id: null,
+  slug: null,
+  name: null,
+  description: null,
+  play_mode: null,
+  rating: null,
+  visibility: null,
+  trailer_youtube_link: null,
+  video_path: null,
+  like_dislike: [],
+  categories: [],
+  sub_categories: [],
+  film_industry: null,
+  celebrities: [],
+  seasons: [],
+  episodes: [],
+}); 
+
+
 definePageMeta({
   layout: 'fixed-nav-layout'
 })
@@ -122,16 +157,29 @@ const uiConfig = {
     },
   },
 }
-const items = [
-    {
-      slot: 'episod',
-      label: 'Episode',
-      content: 'This is the content shown for Tab1'
-    },
-    {
+var items = reactive([]);
+var moreLikes = {
       slot: 'more',
       label: 'More Like This',
       content: 'And, this is the content for Tab2'
     }
-]
+
+
+const response = await callApi('/movies/'+route.params.movie_name);
+movie = response.data;
+if(movie.episodes.length > 0 || movie.seasons.length > 0){
+  var episodes = {
+      slot: 'episod',
+      label: 'Episode',
+      movies: movie.episodes
+    };
+
+  items = [episodes, moreLikes]
+}
+else{
+  items = [moreLikes];
+}
+
+// console.log(response.data)
+
 </script>
