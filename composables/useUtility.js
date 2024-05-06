@@ -1,6 +1,10 @@
 export const useUtility = () => {
     const isSidebarOpenStore = useState('is_sidebar_open', () => false)
     const bodyLoaderStore = useState('body_loader', () => true);
+
+    const tabEpisodesStore = useState('tab_episode', () => []);
+
+
     const onMountedCall = (callApi) => {
         onMounted(
             () => {
@@ -57,6 +61,7 @@ export const useUtility = () => {
     return {
         isSidebarOpenStore,
         bodyLoaderStore,
+        tabEpisodesStore,
         onMountedCall,
         whenReloadPageScrollTop
     }

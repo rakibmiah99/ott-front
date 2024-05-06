@@ -36,8 +36,14 @@
         </div>
 
         
-        <div v-show="movie.seasons.length > 0 ? true : false">
-          <USelectMenu v-model="selected" :options="people" />
+        <div v-show="movie.seasons.length > 0 && seasons.length > 0 ? true : false">
+          <USelectMenu 
+            color="violet"
+            v-model="selected" 
+            :options="seasons" 
+            value-attribute="slug"
+            option-attribute="name"
+          />
         </div>
         
 
@@ -52,7 +58,7 @@
             </template>
             <template #episod="{item}">
               <div>
-                <NuxtLink v-for="movie in item.movies" class="flex space-x-3 border-b p-3 even:bg-violet-50">
+                <NuxtLink :to="`/play/`+movie.slug" v-for="movie in tabEpisodesStore" class="flex space-x-3 border-b p-3 even:bg-violet-50">
                   <NuxtImg class="w-[150px] sm:w-[150px] md:w-[200px] object-cover aspect-[6/4]" :src="movie.thumbnail ?? 'https://cdn.bongo-solutions.com/abfea462-f64d-491e-9cd9-75ee001f45b0/content/79e519c5-47e0-4a29-916b-c2032f225ad7/fdc1fe99-82c1-4987-8127-dc1bd19bbbe5.jpg'"/>
                   <div class="flex flex-col space-y-1">
                     <h1 class="text-md md:text-lg lg:text-xl font-bold">{{movie.name ?? 'When I See Your Face - Chena Chena Lage - S1 E1'}}</h1>
@@ -61,7 +67,6 @@
                   </div>
                 </NuxtLink>
               </div>
-<!--              <p class="text-2xl">{{item.content}}</p>-->
             </template>
 
 
@@ -90,36 +95,11 @@
     </UContainer>
 </template>
 <script setup>
-const people = ['Wade Cooper', 'Arlene Mccoy', 'Devon Webb', 'Tom Cook', 'Tanya Fox', 'Hellen Schmidt', 'Caroline Schultz', 'Mason Heaney', 'Claudie Smitham', 'Emil Schaefer']
-
-const selected = ref(people[0])
-
-
 import BFixedNav from "~/components/nav/BFixedNav.vue";
 import BPlayer from "~/components/BPlayer.vue";
 import {definePageMeta} from "#imports";
 const route = useRoute();
-
-
-var movie = reactive({
-  id: null,
-  slug: null,
-  name: null,
-  description: null,
-  play_mode: null,
-  rating: null,
-  visibility: null,
-  trailer_youtube_link: null,
-  video_path: null,
-  like_dislike: [],
-  categories: [],
-  sub_categories: [],
-  film_industry: null,
-  celebrities: [],
-  seasons: [],
-  episodes: [],
-}); 
-
+const {bodyLoaderStore, tabEpisodesStore} = useUtility();
 
 definePageMeta({
   layout: 'fixed-nav-layout'
@@ -164,14 +144,60 @@ var moreLikes = {
       content: 'And, this is the content for Tab2'
     }
 
+// {name: 'Wade Cooper', slug: 'Wade-Cooper'}, {name: 'Arlene Mccoy', slug: 'Arlene-Mccoy'}
+var seasons = reactive([]);
+const selected = ref('')
+var movie = reactive({
+  id: null,
+  slug: null,
+  name: null,
+  description: null,
+  play_mode: null,
+  rating: null,
+  visibility: null,
+  trailer_youtube_link: null,
+  video_path: null,
+  like_dislike: [],
+  categories: [],
+  sub_categories: [],
+  film_industry: null,
+  celebrities: [],
+  seasons: [],
+  episodes: []
+}); 
 
+watch(selected, async (currentValue, oldValue) => {
+  if(oldValue != ""){
+    bodyLoaderStore.value = true;
+    const response = await callApi('/season/'+currentValue)
+    const data = response.data;
+    tabEpisodesStore.value = data.episodes;
+    bodyLoaderStore.value = false;
+  }
+});
+
+
+bodyLoaderStore.value = true;
 const response = await callApi('/movies/'+route.params.movie_name);
-movie = response.data;
+movie  = response.data;
+//for season dropdown menu 
+var seasonData = [];
+var activeSeasonData = null;
+movie.seasons.forEach(function(season){
+  seasonData.push({name: season.name, slug: season.slug});
+  if(season.is_active == true){
+    activeSeasonData = season.slug;
+  }
+})
+seasons = seasonData;
+selected.value = activeSeasonData ?? seasonData[0]?.slug
+
+tabEpisodesStore.value = movie.episodes;
 if(movie.episodes.length > 0 || movie.seasons.length > 0){
   var episodes = {
       slot: 'episod',
       label: 'Episode',
-      movies: movie.episodes
+      // movies: movie.episodes
     };
 
   items = [episodes, moreLikes]
@@ -180,6 +206,6 @@ else{
   items = [moreLikes];
 }
 
-// console.log(response.data)
+bodyLoaderStore.value = false;
 
 </script>

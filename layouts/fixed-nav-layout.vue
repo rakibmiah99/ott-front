@@ -1,4 +1,5 @@
 <template>
+  <BodyLoader/>
   <BFixedNav class="z-50  md:block"/>
   <slot/>
   <BFooter/>
