@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     'vue3-carousel-nuxt',
     '@nuxt/image',
     '@vueuse/nuxt',
-    // "@sidebase/nuxt-auth",
+    "@sidebase/nuxt-auth",
   ],
   css: [
     '~/assets/css/vendor/video_js.css',
