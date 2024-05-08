@@ -8,6 +8,7 @@ import {$fetch} from "ofetch";
 
 // @ts-ignore
 export default NuxtAuthHandler({
+    secret: 'my-superb-secret',
     pages: {
         signIn: '/auth'
     },
