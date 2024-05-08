@@ -1,6 +1,6 @@
-<script setup>
-  // const {data,signOut} = useAuth();
-  // const user = data.value.user;
+<script setup lang="ts">
+  const {data,signOut} = useAuth();
+  const user = data?.value?.user;
   const items = [
     [{
       // label: user.name ?? 'ben@example.com',
@@ -36,11 +36,11 @@
     [{
         label: 'Sign out',
         icon: 'i-heroicons-arrow-uturn-left',
-        // click: () => {
-        //   signOut({callbackUrl: '/auth'})
-        // }
+        click: () => {
+          signOut({callbackUrl: '/auth'})
+        }
     }]
-  ]
+  ];
 
 </script>
 <template>

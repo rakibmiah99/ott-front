@@ -27,5 +27,9 @@ export default defineNuxtConfig({
   },
   auth: {
     origin: 'https://ott-front.vercel.app/',
+    baseURL: 'api/auth',//process.env.API_BASE_URL,
+    provider: {      
+      type: 'authjs',      
+    }
   }
 })

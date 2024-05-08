@@ -41,14 +41,14 @@
 </template>
 <script setup>
 
-
   definePageMeta({
     auth: {
       unauthenticatedOnly: true,
     }
-
-
   })
+
+  const {bodyLoaderStore} = useUtility();
+  bodyLoaderStore.value = false;
 
   const { data, getSession} = useAuth();
   // console.log('', status)

@@ -70,7 +70,7 @@ export default NuxtAuthHandler({
                 let user = null;
                 //@ts-ignore
                 try {
-                    user = await $fetch('http://127.0.0.1:8000/v1/subscriber-login/mobile', {
+                    user = await $fetch(useRuntimeConfig().public.BASE_URL+'/subscriber-login/mobile', {
                         method: 'post',
                         body: {
                             phone: credential.phone
