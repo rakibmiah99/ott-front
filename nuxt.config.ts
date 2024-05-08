@@ -25,4 +25,7 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'light'
   },
+  auth: {
+    origin: 'https://ott-front.vercel.app/',
+  }
 })
