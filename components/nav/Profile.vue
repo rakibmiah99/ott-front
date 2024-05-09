@@ -1,7 +1,7 @@
 <script setup lang="ts">
   const {data,signOut} =  useAuth();
   const user = data?.value?.user;
-  console.log('ddd', user.id)
+
   const items = [
     [{
       // label: user.name ?? 'ben@example.com',
