@@ -1,10 +1,24 @@
 import {useMenu} from "~/composables/useMenu.ts";
 import {useCategoryWiseMovie} from "~/composables/useCategoryWiseMovie.js";
 import {useSliderHeaderMovie} from "~/composables/useSliderHeaderMovie.js";
-export const callApi = async (endpoint, options) => {
+export const callApi = async (endpoint, options = {}) => {
+    const {data} = useAuth();
+    if(data){
+        // options.referrer = "about:client";
+        // options.referrerPolicy = 'no-ref',
+        options.credentials = 'omit';
+        options.headers = {
+            Authorization: 'Bearer '+data.value?.bearer,
+            // 'Content-Type': 'application/json',
+        };
+    }
+
+   
+    
     const {$base_url} = useNuxtApp();
     try{
         const url = $base_url+endpoint;
+
         return  await $fetch(url, options);
     }
     catch (error){
@@ -14,6 +28,7 @@ export const callApi = async (endpoint, options) => {
 
 export const getMenus = async () => {
     const {linksStore, makeMenu} = useMenu();
+    
     const response = await callApi('/menu', {
         method: 'GET'
     })

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-  const {data,signOut} = useAuth();
+  const {data,signOut} =  useAuth();
   const user = data?.value?.user;
+  console.log('ddd', user.id)
   const items = [
     [{
       // label: user.name ?? 'ben@example.com',
@@ -44,8 +45,11 @@
 
 </script>
 <template>
-  <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }">
-    <!-- <UAvatar :src="user?.image ?? 'https://avatars.githubusercontent.com/u/739984?v=4'" /> -->
+
+  <UButton color="violet" v-show="!data" to="/auth">Login/Register</UButton>
+
+  <UDropdown v-show="data" :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }">
+    <UAvatar :src="user?.image" :alt="user?.name" />
 
     <template #account="{ item }">
       <div class="text-left">

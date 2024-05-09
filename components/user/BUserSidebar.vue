@@ -14,6 +14,11 @@ const links = [
       to: '/account/library'
     },
     {
+      label: 'My Favourite',
+      icon: 'i-heroicons-heart',
+      to: '/account/favourite'
+    },
+    {
       label: 'Watch History',
       icon: 'i-heroicons-arrow-path',
       to: '/account/history'

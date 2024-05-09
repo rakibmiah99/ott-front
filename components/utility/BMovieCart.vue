@@ -2,6 +2,23 @@
 import BIMDB from "~/components/utility/BIMDB.vue";
 const props = defineProps(['movie']);
 const image = "https://m.media-amazon.com/images/M/MV5BZTc1NDFlN2MtOWFjZi00ZWNmLTk1MmEtYThjNDgxNjY2YjU2XkEyXkFqcGdeQXVyNjQxNDYyODI@._V1_.jpg";
+const is_favourite = ref(props.movie?.like_dislike?.is_favourite ? true : false)
+
+async function favouriteAction (content_id: any)  {
+  const response = await callApi('/account/favourite/action', {
+    method: 'POST',
+    params: {
+      content_id: content_id,
+      action: 'favourite'
+    }
+  });
+  console.log(is_favourite.value)
+  const status = response.data?.like_dislike?.is_favourite ;
+  is_favourite.value = status ? true : false;
+
+  console.log(is_favourite.value)
+}
+
 </script>
 
 <template>
@@ -17,7 +34,7 @@ const image = "https://m.media-amazon.com/images/M/MV5BZTc1NDFlN2MtOWFjZi00ZWNmL
           <UButton class="p-2" color="violet" variant="ghost">
             <UIcon name="i-heroicons-eye"></UIcon>
           </UButton>
-          <UButton class="p-2" color="violet" variant="ghost">
+          <UButton @click.stop.prevent="favouriteAction(props.movie.content_id)" class="p-2" :color="is_favourite ? 'rose' : 'violet'" variant="ghost">
             <UIcon  name="i-heroicons-heart"></UIcon>
           </UButton>
         </div>

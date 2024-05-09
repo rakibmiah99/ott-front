@@ -19,7 +19,7 @@
   whenReloadPageScrollTop();
   categoryStore.value = [];
   await getCategoryWiseMovies()
-  onMountedCall(getCategoryWiseMovies)
+  // onMountedCall(getCategoryWiseMovies)
 
   async function getCategoryWiseMovies (limit = null, skip = null)  {
     const options = {}

@@ -1,5 +1,5 @@
 <template>
-    <h1 class="px-4 text-sm">Showing All Watched Videos</h1>
+    <h1 class="px-4 text-sm">Showing All Favorite Videos</h1>
     <div v-show="movies.length > 0">
         <ul role="list" class="mt-3">
           <li v-for="movie in movies" class=" ">
@@ -57,7 +57,7 @@
 
     async function getHistory(page = 1){
       bodyLoaderStore.value = true;
-      const response = await callApi('/account/watch-histories?page='+page);
+      const response = await callApi('/account/favourite?page='+page);
       bodyLoaderStore.value = false;
       var data = response.data;
       movies.value = data.data;

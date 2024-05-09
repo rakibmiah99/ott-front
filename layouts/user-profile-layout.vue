@@ -1,5 +1,6 @@
 <template>
-  <BFixedNav class="hidden shadow-lg z-50  md:block"/>
+  <BodyLoader/>
+  <BFixedNav class="hidden z-50  md:block"/>
   <BSmallNav class="block shadow-lg  md:hidden px-3"/>
   <UContainer>
     <div class="py-10 flex justify-center">
@@ -25,4 +26,6 @@ import BSmallNav from "~/components/nav/BSmallNav.vue";
 import BSidebar from "~/components/nav/BSidebar.vue";
 import BFooter from "~/components/BFooter.vue";
 import BUserSidebar from "~/components/user/BUserSidebar.vue";
+const {bodyLoaderStore} = useUtility();
+bodyLoaderStore.value = false;
 </script>
