@@ -1,6 +1,6 @@
 <template>
     <UContainer>
-      <BuyPackageInMovie v-show="movie.play_mode == 'paid'"/>
+      <BuyPackage v-show="movie.play_mode == 'paid'"/>
       <div v-show="movie.play_mode == 'free'">
         <div class="player  w-full bg-gray-100 overflow-hidden">
             <BPlayer/>

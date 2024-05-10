@@ -29,8 +29,6 @@ const ui = {
 
 
 
-
-
 </script>
 <template>
   <div class="flex items-center">
